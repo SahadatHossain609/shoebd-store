@@ -1,17 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
 import toast from 'react-hot-toast';
-import { auth, googleAuthProvider, db } from '../lib/firebase';
-import { 
-  signInWithPopup, 
-  signOut, 
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  updateProfile
-} from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { handleFirestoreError, OperationType } from '../utils/firebaseErrors';
+import { db } from '../lib/firebase';
+import { collection, doc, getDoc, setDoc, query, where, getDocs } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
@@ -29,113 +20,95 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        try {
-          const userDocRef = doc(db, 'users', firebaseUser.uid);
-          const userDoc = await getDoc(userDocRef);
-          
-          let userData: User;
-          
-          if (userDoc.exists()) {
-            userData = userDoc.data() as User;
-          } else {
-            // Register new user
-            userData = {
-              id: firebaseUser.uid,
-              name: firebaseUser.displayName || 'User',
-              email: firebaseUser.email || '',
-              phone: firebaseUser.phoneNumber || '',
-              role: firebaseUser.email === 'sh2305895@gmail.com' ? 'admin' : 'customer'
-            };
-            await setDoc(userDocRef, userData);
-          }
-          
-          setUser(userData);
-        } catch (error) {
-          handleFirestoreError(error, OperationType.GET, 'users');
-        }
-      } else {
-        setUser(null);
+    // Check local storage for persistent login
+    const storedUser = localStorage.getItem('ecommerce_user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem('ecommerce_user');
       }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    }
+    setLoading(false);
   }, []);
 
   const login = async () => {
-    try {
-      await signInWithPopup(auth, googleAuthProvider);
-      toast.success('Login successful!');
-      return true;
-    } catch (error: any) {
-      if (error.code !== 'auth/popup-closed-by-user') {
-        toast.error('Login failed');
-      }
-      return false;
-    }
+    toast.error('Google login is disabled for this domain.');
+    return false;
   };
 
   const loginWithEmail = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast.success('Login successful!');
-      return true;
-    } catch (error: any) {
-      toast.error('Invalid email or password');
+      const q = query(
+        collection(db, 'users'), 
+        where('email', '==', email),
+        where('password', '==', password)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        const userData = querySnapshot.docs[0].data() as User;
+        setUser(userData);
+        localStorage.setItem('ecommerce_user', JSON.stringify(userData));
+        toast.success('Login successful!');
+        return true;
+      } else {
+        toast.error('Invalid email or password');
+        return false;
+      }
+    } catch (error) {
+      console.error("Login error", error);
+      toast.error('Login failed due to network error');
       return false;
     }
   };
 
   const register = async (name: string, email: string, phone: string, password: string) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Check if email exists
+      const q = query(collection(db, 'users'), where('email', '==', email));
+      const querySnapshot = await getDocs(q);
       
-      // Update the profile display name
-      if (auth.currentUser) {
-        await updateProfile(auth.currentUser, { displayName: name });
+      if (!querySnapshot.empty) {
+        toast.error('Email is already registered');
+        return false;
       }
 
-      // Create the user document manually here with phone number included
-      const userDocRef = doc(db, 'users', userCredential.user.uid);
-      const userData: User = {
-        id: userCredential.user.uid,
+      // Generate a simple unique ID
+      const userId = 'user_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+      
+      const userData = {
+        id: userId,
         name: name,
         email: email,
-        phone: phone || '', // Ensure phone is a string even if not provided
+        phone: phone || '',
+        password: password, // In a real app this would be hashed, but for this custom auth it's plaintext
         role: email === 'sh2305895@gmail.com' ? 'admin' : 'customer'
       };
       
+      const userDocRef = doc(db, 'users', userId);
       await setDoc(userDocRef, userData);
-      setUser(userData);
+      
+      // Don't save password in the context state
+      const userState: User = { ...userData, role: userData.role as 'admin' | 'customer' };
+      
+      setUser(userState);
+      localStorage.setItem('ecommerce_user', JSON.stringify(userState));
       
       toast.success('Registration successful!');
       return true;
     } catch (error: any) {
       console.error('Registration Error:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        toast.error('Email is already registered');
-      } else if (error.code === 'auth/weak-password') {
-        toast.error('Password is too weak');
-      } else if (error.code === 'permission-denied') {
-        // Fallback for permission errors during user doc creation
-        toast.success('Registered successfully, but could not save profile details.');
-        return true;
-      } else {
-        toast.error('Registration failed: ' + error.message);
-      }
+      toast.error('Registration failed. Please try again.');
       return false;
     }
   };
 
   const logout = async () => {
-    try {
-      await signOut(auth);
-      toast.success('Logged out successfully');
-    } catch (error) {
-      toast.error('Logout failed');
-    }
+    setUser(null);
+    localStorage.removeItem('ecommerce_user');
+    toast.success('Logged out successfully');
   };
 
   return (
