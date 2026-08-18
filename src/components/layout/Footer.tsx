@@ -48,7 +48,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-wider">Customer Service</h3>
             <ul className="space-y-4">
-              <li><Link to="/account" className="hover:text-orange-500 transition-colors">My Account</Link></li>
+              <li><Link to="/dashboard" className="hover:text-orange-500 transition-colors">My Account</Link></li>
               <li><Link to="/orders" className="hover:text-orange-500 transition-colors">Order Tracking</Link></li>
               <li><Link to="/wishlist" className="hover:text-orange-500 transition-colors">Wishlist</Link></li>
               <li><Link to="/shipping" className="hover:text-orange-500 transition-colors">Shipping & Returns</Link></li>

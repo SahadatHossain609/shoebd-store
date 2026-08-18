@@ -29,13 +29,6 @@ const AdminLogin = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const success = await login();
-    if (success) {
-      // The useEffect will handle the redirect once user state updates
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -92,27 +85,6 @@ const AdminLogin = () => {
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-800 text-gray-400">Or continue with</span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <button
-                onClick={handleGoogleLogin}
-                className="w-full flex justify-center items-center py-4 px-4 border border-gray-600 rounded-xl shadow-sm text-sm font-bold text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
-              >
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" className="w-5 h-5 mr-3" />
-                Google
-              </button>
-            </div>
-          </div>
-          
           <div className="mt-6 text-center">
              <button onClick={() => navigate('/')} className="text-sm text-gray-400 hover:text-white transition-colors">
                Return to Store

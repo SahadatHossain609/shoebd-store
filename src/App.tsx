@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { StoreProvider } from './context/StoreContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -39,6 +40,7 @@ import AdminSettings from './admin/AdminSettings';
 export default function App() {
   return (
     <Router>
+      <Toaster position="top-right" />
       <AuthProvider>
         <StoreProvider>
           <CartProvider>

@@ -120,7 +120,7 @@ const Checkout = () => {
             Continue Shopping
           </Link>
           {user && (
-            <Link to="/account" className="bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors">
+            <Link to="/dashboard" className="bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors">
               View Dashboard
             </Link>
           )}

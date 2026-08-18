@@ -13,7 +13,7 @@ const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
@@ -24,7 +24,8 @@ const Register = () => {
       return;
     }
     
-    if (register(name, email, phone, password)) {
+    const success = await register(name, email, phone, password);
+    if (success) {
       navigate('/dashboard');
     }
   };
