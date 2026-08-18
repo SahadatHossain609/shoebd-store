@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         id: userCredential.user.uid,
         name: name,
         email: email,
-        phone: phone,
+        phone: phone || '', // Ensure phone is a string even if not provided
         role: email === 'sh2305895@gmail.com' ? 'admin' : 'customer'
       };
       
@@ -113,12 +113,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast.success('Registration successful!');
       return true;
     } catch (error: any) {
+      console.error('Registration Error:', error);
       if (error.code === 'auth/email-already-in-use') {
         toast.error('Email is already registered');
       } else if (error.code === 'auth/weak-password') {
         toast.error('Password is too weak');
+      } else if (error.code === 'permission-denied') {
+        // Fallback for permission errors during user doc creation
+        toast.success('Registered successfully, but could not save profile details.');
+        return true;
       } else {
-        toast.error('Registration failed. Please try again.');
+        toast.error('Registration failed: ' + error.message);
       }
       return false;
     }
