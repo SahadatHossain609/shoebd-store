@@ -8,7 +8,7 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const { orders } = useStore();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'orders' | 'profile'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'profile' | 'settings'>('orders');
 
   useEffect(() => {
     if (!user) {
@@ -68,7 +68,10 @@ const Dashboard = () => {
                 <Link to="/wishlist" className="w-full flex items-center px-4 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-50 transition-colors">
                   <Heart size={20} className="mr-3" /> My Wishlist
                 </Link>
-                <button className="w-full flex items-center px-4 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-50 transition-colors">
+                <button 
+                  onClick={() => setActiveTab('settings')}
+                  className={`w-full flex items-center px-4 py-3 rounded-xl font-bold transition-colors ${activeTab === 'settings' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                >
                   <Settings size={20} className="mr-3" /> Account Settings
                 </button>
               </nav>
@@ -149,6 +152,38 @@ const Dashboard = () => {
                     Save Changes
                   </button>
                 </form>
+              </div>
+            )}
+            
+            {activeTab === 'settings' && (
+              <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                <h2 className="text-2xl font-black text-gray-900 mb-6 tracking-tight">Account Settings</h2>
+                <div className="max-w-xl space-y-8">
+                  <div className="border-b border-gray-100 pb-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">Change Password</h3>
+                    <form className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Current Password</label>
+                        <input type="password" placeholder="••••••••" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">New Password</label>
+                        <input type="password" placeholder="••••••••" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                      </div>
+                      <button type="button" onClick={() => alert("Password functionality is a placeholder in this demo.")} className="bg-orange-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-orange-700 transition-colors">
+                        Update Password
+                      </button>
+                    </form>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 text-red-600">Danger Zone</h3>
+                    <p className="text-sm text-gray-500 mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+                    <button type="button" onClick={() => alert("Account deletion is disabled in this demo.")} className="bg-red-50 text-red-600 border border-red-200 px-6 py-2 rounded-xl font-bold hover:bg-red-100 transition-colors">
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
