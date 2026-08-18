@@ -25,7 +25,7 @@ const Register = () => {
     }
     
     if (register(name, email, phone, password)) {
-      navigate('/account');
+      navigate('/dashboard');
     }
   };
 

@@ -94,7 +94,7 @@ const Navbar = () => {
             </Link>
 
             <div className="relative group">
-              <Link to={user ? "/account" : "/login"} className="text-gray-600 hover:text-orange-600 transition-colors flex items-center">
+              <Link to={user ? "/dashboard" : "/login"} className="text-gray-600 hover:text-orange-600 transition-colors flex items-center">
                 <User size={24} />
               </Link>
               {user && (
@@ -103,7 +103,7 @@ const Navbar = () => {
                     <p className="text-sm text-gray-900 font-medium truncate">{user.name}</p>
                     <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
-                  <Link to="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600">Dashboard</Link>
+                  <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600">Dashboard</Link>
                   {user.role === 'admin' && (
                     <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600">Admin Panel</Link>
                   )}
