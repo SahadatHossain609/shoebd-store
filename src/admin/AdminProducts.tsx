@@ -18,7 +18,7 @@ const AdminProducts = () => {
     price: '',
     discountPrice: '',
     category: '',
-    section: 'Men',
+    section: ['Men'],
     brand: '',
     sizes: '',
     colors: '',
@@ -33,13 +33,23 @@ const AdminProducts = () => {
   const handleOpenModal = (product?: Product) => {
     if (product) {
       setEditingProduct(product);
+      
+      let initialSections = ['Men'];
+      if (product.section) {
+        if (Array.isArray(product.section)) {
+          initialSections = product.section.length > 0 ? product.section : ['Men'];
+        } else if (typeof product.section === 'string') {
+          initialSections = [product.section];
+        }
+      }
+      
       setFormData({
         name: product.name,
         description: product.description,
         price: product.price.toString(),
         discountPrice: product.discountPrice?.toString() || '',
         category: product.category,
-        section: product.section || 'Men',
+        section: initialSections,
         brand: product.brand,
         sizes: product.sizes.join(', '),
         colors: product.colors.join(', '),
@@ -52,7 +62,7 @@ const AdminProducts = () => {
       setEditingProduct(null);
       setFormData({
         name: '', description: '', price: '', discountPrice: '', category: categories[0]?.name || '',
-        section: 'Men',
+        section: ['Men'],
         brand: '', sizes: '', colors: '', stock: '', imageUrls: '', uploadedImages: [], featured: false
       });
     }
@@ -180,7 +190,7 @@ const AdminProducts = () => {
                   <td className="py-3 font-medium text-gray-900">{product.name}</td>
                   <td className="py-3 text-gray-600">
                     <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-semibold">
-                      {product.section || 'Men'}
+                      {Array.isArray(product.section) ? product.section.join(', ') : (product.section || 'Men')}
                     </span>
                   </td>
                   <td className="py-3 text-gray-600">{product.category}</td>
@@ -229,17 +239,27 @@ const AdminProducts = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Section (Gender)</label>
-                  <select 
-                    required 
-                    value={formData.section} 
-                    onChange={e => setFormData({...formData, section: e.target.value})} 
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-white"
-                  >
-                    <option value="Men">Men</option>
-                    <option value="Women">Women</option>
-                    <option value="Kids">Kids</option>
-                    <option value="Unisex">Unisex</option>
-                  </select>
+                  <div className="flex flex-wrap gap-3 mt-2">
+                    {['Men', 'Women', 'Kids', 'Unisex'].map(sec => (
+                      <label key={sec} className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.section.includes(sec)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setFormData({...formData, section: [...formData.section, sec]});
+                            } else {
+                              const newSection = formData.section.filter(s => s !== sec);
+                              if (newSection.length === 0) newSection.push('Men'); // Ensure at least one is selected
+                              setFormData({...formData, section: newSection});
+                            }
+                          }}
+                          className="w-4 h-4 text-orange-600 rounded border-gray-300 focus:ring-orange-500"
+                        />
+                        <span className="text-sm text-gray-700">{sec}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Category</label>

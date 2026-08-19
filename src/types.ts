@@ -5,7 +5,7 @@ export interface Product {
   price: number;
   discountPrice?: number;
   category: string;
-  section?: string;
+  section?: string[];
   brand: string;
   sizes: string[];
   colors: string[];

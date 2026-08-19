@@ -29,7 +29,12 @@ const Shop = () => {
 
     if (categoryFilter) {
       if (['Men', 'Women', 'Kids', 'Unisex', 'Sports', 'Casual'].includes(categoryFilter)) {
-        filtered = filtered.filter(p => p.section === categoryFilter || p.category === categoryFilter);
+        filtered = filtered.filter(p => {
+          if (Array.isArray(p.section)) {
+            return p.section.includes(categoryFilter) || p.category === categoryFilter;
+          }
+          return p.section === categoryFilter || p.category === categoryFilter;
+        });
       } else {
         filtered = filtered.filter(p => p.category === categoryFilter);
       }
