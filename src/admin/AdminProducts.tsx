@@ -3,8 +3,7 @@ import { useStore } from '../context/StoreContext';
 import { Plus, Edit2, Trash2, Search, X } from 'lucide-react';
 import { Product } from '../types';
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import RichTextEditor from '../components/RichTextEditor';
 
 const AdminProducts = () => {
   const { products, categories, addProduct, updateProduct, deleteProduct } = useStore();
@@ -296,11 +295,10 @@ const AdminProducts = () => {
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
                 <div className="bg-white rounded-lg">
-                  <ReactQuill 
-                    theme="snow" 
+                  <RichTextEditor
                     value={formData.description} 
                     onChange={value => setFormData({...formData, description: value})} 
-                    className="h-40 mb-12"
+                    className="mb-12"
                   />
                 </div>
               </div>
