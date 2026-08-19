@@ -217,8 +217,8 @@ const AdminProducts = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full my-8 relative">
+        <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto p-4 sm:p-6 flex justify-center items-start">
+          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full mt-4 sm:mt-10 mb-10 relative">
             <button 
               onClick={() => setIsModalOpen(false)}
               className="absolute top-6 right-6 text-gray-400 hover:text-gray-900"
