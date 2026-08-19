@@ -3,6 +3,9 @@ import { useStore } from '../context/StoreContext';
 import { Plus, Edit2, Trash2, Search, X } from 'lucide-react';
 import { Product } from '../types';
 
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 const AdminProducts = () => {
   const { products, categories, addProduct, updateProduct, deleteProduct } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
@@ -217,9 +220,18 @@ const AdminProducts = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Category</label>
-                  <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                  <input 
+                    type="text" 
+                    required 
+                    list="category-list"
+                    value={formData.category} 
+                    onChange={e => setFormData({...formData, category: e.target.value})} 
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" 
+                    placeholder="Select or type category"
+                  />
+                  <datalist id="category-list">
                     {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
-                  </select>
+                  </datalist>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Stock</label>
@@ -283,7 +295,14 @@ const AdminProducts = () => {
               
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
-                <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"></textarea>
+                <div className="bg-white rounded-lg">
+                  <ReactQuill 
+                    theme="snow" 
+                    value={formData.description} 
+                    onChange={value => setFormData({...formData, description: value})} 
+                    className="h-40 mb-12"
+                  />
+                </div>
               </div>
 
               <div className="flex items-center">

@@ -116,9 +116,10 @@ const ProductDetails = () => {
                 )}
               </div>
 
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                {product.description}
-              </p>
+              <div 
+                className="text-gray-600 mb-8 leading-relaxed prose max-w-none"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              ></div>
 
               <div className="h-px bg-gray-100 w-full mb-8"></div>
 
@@ -250,8 +251,7 @@ const ProductDetails = () => {
           <div className="p-8">
             {activeTab === 'description' && (
               <div className="prose max-w-none text-gray-600">
-                <p>{product.description}</p>
-                <p className="mt-4">Designed for maximum comfort and style, these shoes are perfect for any occasion. The premium materials ensure durability, while the modern design keeps you looking fresh.</p>
+                <div dangerouslySetInnerHTML={{ __html: product.description }}></div>
               </div>
             )}
             {activeTab === 'specs' && (
