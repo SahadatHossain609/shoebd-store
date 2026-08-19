@@ -70,17 +70,12 @@ const Checkout = () => {
       }
     }
 
-    if (!user) {
-      toast.error('Please sign in to place an order');
-      return;
-    }
-
     try {
       // Place Order
       const status = paymentMethod === 'COD' ? 'Processing' : 'Pending Verification';
       
       const newOrder = await addOrder({
-        userId: user.id,
+        userId: user?.id || 'guest',
         items: cart,
         shippingAddress: address,
         paymentMethod,
