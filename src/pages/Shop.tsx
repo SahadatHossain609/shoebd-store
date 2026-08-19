@@ -28,7 +28,11 @@ const Shop = () => {
     let filtered = [...products];
 
     if (categoryFilter) {
-      filtered = filtered.filter(p => p.category === categoryFilter);
+      if (['Men', 'Women', 'Kids', 'Unisex', 'Sports', 'Casual'].includes(categoryFilter)) {
+        filtered = filtered.filter(p => p.section === categoryFilter || p.category === categoryFilter);
+      } else {
+        filtered = filtered.filter(p => p.category === categoryFilter);
+      }
     }
     
     if (searchFilter) {

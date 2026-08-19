@@ -18,6 +18,7 @@ const AdminProducts = () => {
     price: '',
     discountPrice: '',
     category: '',
+    section: 'Men',
     brand: '',
     sizes: '',
     colors: '',
@@ -38,6 +39,7 @@ const AdminProducts = () => {
         price: product.price.toString(),
         discountPrice: product.discountPrice?.toString() || '',
         category: product.category,
+        section: product.section || 'Men',
         brand: product.brand,
         sizes: product.sizes.join(', '),
         colors: product.colors.join(', '),
@@ -50,6 +52,7 @@ const AdminProducts = () => {
       setEditingProduct(null);
       setFormData({
         name: '', description: '', price: '', discountPrice: '', category: categories[0]?.name || '',
+        section: 'Men',
         brand: '', sizes: '', colors: '', stock: '', imageUrls: '', uploadedImages: [], featured: false
       });
     }
@@ -99,6 +102,7 @@ const AdminProducts = () => {
       price: Number(formData.price),
       discountPrice: formData.discountPrice ? Number(formData.discountPrice) : undefined,
       category: formData.category,
+      section: formData.section,
       brand: formData.brand,
       sizes: formData.sizes.split(',').map(s => s.trim()).filter(Boolean),
       colors: formData.colors.split(',').map(s => s.trim()).filter(Boolean),
@@ -160,6 +164,7 @@ const AdminProducts = () => {
               <tr className="border-b border-gray-100">
                 <th className="py-3 font-bold text-sm text-gray-500">Image</th>
                 <th className="py-3 font-bold text-sm text-gray-500">Name</th>
+                <th className="py-3 font-bold text-sm text-gray-500">Section</th>
                 <th className="py-3 font-bold text-sm text-gray-500">Category</th>
                 <th className="py-3 font-bold text-sm text-gray-500">Price</th>
                 <th className="py-3 font-bold text-sm text-gray-500">Stock</th>
@@ -173,6 +178,11 @@ const AdminProducts = () => {
                     <img src={product.images[0]} alt={product.name} className="w-12 h-12 object-cover rounded bg-gray-100" />
                   </td>
                   <td className="py-3 font-medium text-gray-900">{product.name}</td>
+                  <td className="py-3 text-gray-600">
+                    <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-semibold">
+                      {product.section || 'Men'}
+                    </span>
+                  </td>
                   <td className="py-3 text-gray-600">{product.category}</td>
                   <td className="py-3 font-bold text-gray-900">৳{product.price.toLocaleString()}</td>
                   <td className="py-3">
@@ -216,6 +226,20 @@ const AdminProducts = () => {
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Brand</label>
                   <input type="text" required value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Section (Gender)</label>
+                  <select 
+                    required 
+                    value={formData.section} 
+                    onChange={e => setFormData({...formData, section: e.target.value})} 
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-white"
+                  >
+                    <option value="Men">Men</option>
+                    <option value="Women">Women</option>
+                    <option value="Kids">Kids</option>
+                    <option value="Unisex">Unisex</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Category</label>
